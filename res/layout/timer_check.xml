@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+    <TextView
+            android:id="@+id/timer_chk_close"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="关闭" />
+
+    <TextView
+            android:id="@+id/timer_chk_five"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timer_chk_close"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="5s" />
+
+    <TextView
+            android:id="@+id/timer_chk_ten"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timer_chk_five"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="10s" />
+
+    <TextView
+            android:id="@+id/timer_chk_twenty"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/timer_chk_ten"
+            android:text="20s"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+</RelativeLayout>
