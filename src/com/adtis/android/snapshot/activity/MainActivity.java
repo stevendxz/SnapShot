@@ -136,14 +136,12 @@ public class MainActivity extends Activity
 
     /**
      * 摄像头过度曝光 参数为EFFECT_SOLARIZE
-     * EFFECT_NONE,EFFECT_MONO,EFFECT_NEGATIVE,EFFECT_SOLARIZE,EFFECT_SEPIA...
      * EFFECT_NONE 无效果
      * EFFECT_MONO 黑白效果
      * EFFECT_NEGATIVE 负面效果
      * EFFECT_SOLARIZE 曝光效果
      * EFFECT_SEPIA Sephia效果
      * EFFECT_POSTERIZE 多色调分色印效果
-     * <p/>
      * EFFECT_WHITEBOARD 白板效果
      * EFFECT_BLACKBOARD 黑板效果
      * EFFECT_AQUA 浅绿色效果
@@ -166,6 +164,11 @@ public class MainActivity extends Activity
         Log.v(APPLOGTAG, "Using Effect:" + parameters.getColorEffect());
     }
 
+    /**
+     * 设置相机的尺寸大小
+     *
+     * @param parameters
+     */
     public void setNewCameraSize(Camera.Parameters parameters) {
         int best_width = 0;
         int best_height = 0;
@@ -246,66 +249,7 @@ public class MainActivity extends Activity
                 }
                 break;
             case R.id.btn_switch_camera:
-                int cameraCount = 0;
-                Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-                //得到摄像头的个数
-                cameraCount = Camera.getNumberOfCameras();
-
-                for (int i = 0; i < cameraCount; i++) {
-                    //得到每一个摄像头的信息
-                    Camera.getCameraInfo(i, cameraInfo);
-                    if (cameraPosition == 1) {
-                        //现在是后置，变更为前置
-                        //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-                        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            //停掉原来摄像头的预览
-                            camera.stopPreview();
-                            //释放资源
-                            camera.release();
-                            //取消原来摄像头
-                            camera = null;
-                            //打开当前选中的摄像头
-                            camera = Camera.open(i);
-                            Camera.Parameters parameters = camera.getParameters();
-                            setNewAutoOrientation(parameters);
-                            try {
-                                //通过surfaceview显示取景画面
-                                camera.setPreviewDisplay(surfaceHolder);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            //开始预览
-                            camera.startPreview();
-                            cameraPosition = 0;
-                            break;
-                        }
-                    } else {
-                        //现在是前置， 变更为后置
-                        //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-                        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                            //停掉原来摄像头的预览
-                            camera.stopPreview();
-                            //释放资源
-                            camera.release();
-                            //取消原来摄像头
-                            camera = null;
-                            //打开当前选中的摄像头
-                            camera = Camera.open(i);
-                            Camera.Parameters parameters = camera.getParameters();
-                            setNewAutoOrientation(parameters);
-                            try {
-                                //通过surfaceview显示取景画面
-                                camera.setPreviewDisplay(surfaceHolder);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            //开始预览
-                            camera.startPreview();
-                            cameraPosition = 1;
-                            break;
-                        }
-                    }
-                }
+                onChangeCameraGingerbread();
                 break;
             case R.id.btn_clkview_chk:
                 if (!isCanClkCameraView) {
@@ -318,6 +262,69 @@ public class MainActivity extends Activity
                 break;
             default:
                 break;
+        }
+    }
+
+    public void onChangeCameraGingerbread() {
+        int cameraCount = 0;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        //得到摄像头的个数
+        cameraCount = Camera.getNumberOfCameras();
+
+        for (int i = 0; i < cameraCount; i++) {
+            //得到每一个摄像头的信息
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraPosition == 1) {
+                //现在是后置，变更为前置
+                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
+                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    //停掉原来摄像头的预览
+                    camera.stopPreview();
+                    //释放资源
+                    camera.release();
+                    //取消原来摄像头
+                    camera = null;
+                    //打开当前选中的摄像头
+                    camera = Camera.open(i);
+                    Camera.Parameters parameters = camera.getParameters();
+                    setNewAutoOrientation(parameters);
+                    try {
+                        //通过surfaceview显示取景画面
+                        camera.setPreviewDisplay(surfaceHolder);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //开始预览
+                    camera.startPreview();
+                    cameraPosition = 0;
+                    break;
+                }
+            } else {
+                //现在是前置， 变更为后置
+                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
+                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    //停掉原来摄像头的预览
+                    camera.stopPreview();
+                    //释放资源
+                    camera.release();
+                    //取消原来摄像头
+                    camera = null;
+                    //打开当前选中的摄像头
+                    camera = Camera.open(i);
+                    Camera.Parameters parameters = camera.getParameters();
+                    setNewAutoOrientation(parameters);
+                    try {
+                        //通过surfaceview显示取景画面
+                        camera.setPreviewDisplay(surfaceHolder);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //开始预览
+                    camera.startPreview();
+                    cameraPosition = 1;
+                    break;
+                }
+            }
         }
     }
 
@@ -342,6 +349,10 @@ public class MainActivity extends Activity
         return cam;
     }
 
+    /**
+     * 点击延时按钮，弹出选择延时时间下拉列表
+     * @param view
+     */
     public void onPopupButtonClick(View view) {
         //创建PopupMenu对象
         popupMenu = new PopupMenu(this, view);
