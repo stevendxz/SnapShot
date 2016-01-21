@@ -23,41 +23,114 @@
             android:background="@drawable/btn_takepic"/>
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="20s"
             android:id="@+id/txt_takepic_time"
             android:textColor="@color/white"
             android:gravity="center"
-            android:layout_alignBottom="@+id/btn_takepic"
             android:visibility="invisible"
-            android:layout_marginBottom="25dp"
+            android:layout_alignTop="@+id/btn_takepic"
             android:layout_centerHorizontal="true"/>
-    <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btn_time_chk"
-            android:background="@drawable/icon_notime"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/btn_switch_camera"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"/>
-    <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btn_switch_camera"
-            android:background="@drawable/icon_camera"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+    <LinearLayout
+            android:id="@+id/layout_switchcamera"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="10dp"/>
-    <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btn_clkview_chk"
-            android:background="@drawable/icon_clkview_lock"
-            android:layout_alignTop="@+id/btn_time_chk"
-            android:layout_toLeftOf="@+id/btn_time_chk"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true">
+        <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_switch_camera"
+                android:background="@drawable/icon_camera"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="变换摄像头"
+                android:id="@+id/lbl_switch_camera"
+                android:layout_marginTop="5dp"
+                android:textSize="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/layout_chktime"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@+id/layout_switchcamera">
+
+        <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_time_chk"
+                android:background="@drawable/icon_notime"
+                android:layout_alignParentTop="true"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall"
+                  android:text="延时拍照"
+                  android:id="@+id/lbl_time_chk"
+                  android:layout_marginTop="5dp"
+                  android:textSize="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/layout_clkcamera"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@+id/layout_chktime">
+        <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btn_clkview_chk"
+                android:background="@drawable/icon_clkview_lock"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall"
+                  android:text="点击屏幕拍照"
+                  android:id="@+id/lbl_clkview_type"
+                  android:layout_marginTop="5dp"
+                  android:textSize="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/layout_cameratype"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/layout_clkcamera">
+
+        <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="@drawable/icon_effects_none"
+                android:id="@+id/btn_effects_chk"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall"
+                  android:text="拍照效果"
+                  android:id="@+id/lbl_switch_cameratype"
+                  android:layout_marginTop="5dp"
+                  android:textSize="8dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

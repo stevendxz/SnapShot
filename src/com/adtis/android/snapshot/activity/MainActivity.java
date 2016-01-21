@@ -40,6 +40,11 @@ public class MainActivity extends Activity
     private int cameraPosition = 1;//0代表前置摄像头，1代表后置摄像头
     private ImageButton btnClkCameraView;
     private boolean isCanClkCameraView = false;
+
+
+    private ImageButton btnEffectsChk;
+    private String cameraEffect = null;
+
     private int timer = 0;
     private Camera camera;
     private Runnable timerUpdateTask = new Runnable() {
@@ -96,6 +101,9 @@ public class MainActivity extends Activity
 
         btnClkCameraView = (ImageButton) findViewById(R.id.btn_clkview_chk);
         btnClkCameraView.setOnClickListener(this);
+
+        btnEffectsChk = (ImageButton) findViewById(R.id.btn_effects_chk);
+        btnEffectsChk.setOnClickListener(this);
     }
 
     @Override
@@ -115,6 +123,18 @@ public class MainActivity extends Activity
             Log.v(LOGTAG, e.getMessage());
         }
         camera.startPreview();
+    }
+
+    public void reSurfaceCreated(SurfaceHolder holder, String chkEffect) {
+        try {
+            Camera.Parameters parameters = camera.getParameters();
+            setNewColorEffect(parameters, chkEffect);
+            camera.setParameters(parameters);
+            camera.setPreviewDisplay(holder);
+        } catch (IOException e) {
+            camera.release();
+            Log.v(LOGTAG, e.getMessage());
+        }
     }
 
     /**
@@ -149,16 +169,18 @@ public class MainActivity extends Activity
      * @param parameters
      */
 
-    public void setNewColorEffect(Camera.Parameters parameters) {
+    public void setNewColorEffect(Camera.Parameters parameters, String chkEffect) {
         List<String> colorEffects = parameters.getSupportedColorEffects();
         Iterator<String> cei = colorEffects.iterator();
         while (cei.hasNext()) {
             String currentEffect = cei.next();
             Log.v(APPLOGTAG, "Checking " + currentEffect);
-            if (currentEffect.equals(Camera.Parameters.EFFECT_SOLARIZE)) {
-                Log.v(APPLOGTAG, "Using SOLARIZE");
-                parameters.setColorEffect(Camera.Parameters.EFFECT_SOLARIZE);
-                break;
+            if (cameraEffect != null) {
+                if (currentEffect.equals(chkEffect)) {
+                    Log.v(APPLOGTAG, "Using " + chkEffect);
+                    parameters.setColorEffect(chkEffect);
+                    break;
+                }
             }
         }
         Log.v(APPLOGTAG, "Using Effect:" + parameters.getColorEffect());
@@ -238,7 +260,7 @@ public class MainActivity extends Activity
                 }
                 break;
             case R.id.btn_time_chk:
-                onPopupButtonClick(v);
+                onPopupTimeMenuButtonClick(v);
                 break;
             case R.id.btn_takepic:
                 //camera.takePicture(null, null, null, this);
@@ -259,6 +281,9 @@ public class MainActivity extends Activity
                     btnClkCameraView.setBackgroundResource(R.drawable.icon_clkview_lock);
                     isCanClkCameraView = false;
                 }
+                break;
+            case R.id.btn_effects_chk:
+                onPopupEffectsMenuButtonClick(v);
                 break;
             default:
                 break;
@@ -353,7 +378,7 @@ public class MainActivity extends Activity
      * 点击延时按钮，弹出选择延时时间下拉列表
      * @param view
      */
-    public void onPopupButtonClick(View view) {
+    public void onPopupTimeMenuButtonClick(View view) {
         //创建PopupMenu对象
         popupMenu = new PopupMenu(this, view);
         //将R.menu.popup_menu菜单资源加载到popup菜单中
@@ -403,9 +428,100 @@ public class MainActivity extends Activity
         popupMenu.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.timer_check, menu);
-        return true;
+    /**
+     * 点击模式按钮，弹出模式选择对话框
+     *
+     * @param view
+     */
+    public void onPopupEffectsMenuButtonClick(View view) {
+        //创建PopupMenu对象
+        popupMenu = new PopupMenu(this, view);
+        //将R.menu.popup_menu菜单资源加载到popup菜单中
+        getMenuInflater().inflate(R.menu.effects_check, popupMenu.getMenu());
+        //为popup菜单的菜单项单击事件绑定事件监听器
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.effects_chk_none:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_none);
+                        cameraEffect = Camera.Parameters.EFFECT_NONE;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_mono:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_mono);
+                        cameraEffect = Camera.Parameters.EFFECT_MONO;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_negative:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_negative);
+                        cameraEffect = Camera.Parameters.EFFECT_NEGATIVE;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_solarize:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_solarize);
+                        cameraEffect = Camera.Parameters.EFFECT_SOLARIZE;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_sepia:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_sepia);
+                        cameraEffect = Camera.Parameters.EFFECT_SEPIA;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_posterize:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_posterize);
+                        cameraEffect = Camera.Parameters.EFFECT_POSTERIZE;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_whiteboard:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_white);
+                        cameraEffect = Camera.Parameters.EFFECT_WHITEBOARD;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_blackboard:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_black);
+                        cameraEffect = Camera.Parameters.EFFECT_BLACKBOARD;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    case R.id.effects_chk_aqua:
+                        btnEffectsChk.setBackgroundResource(R.drawable.icon_effects_aqua);
+                        cameraEffect = Camera.Parameters.EFFECT_AQUA;
+                        Log.v(APPLOGTAG, "CLK " + cameraEffect);
+                        reSurfaceCreated(surfaceHolder, cameraEffect);
+                        //隐藏该对话框
+                        popupMenu.dismiss();
+                        break;
+                    default:
+                        //使用Toast显示用户单击的菜单项
+                        Toast.makeText(MainActivity.this, "您单击了【" + item.getTitle() + "】菜单项", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 }
