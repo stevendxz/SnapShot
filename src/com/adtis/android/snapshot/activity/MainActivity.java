@@ -23,29 +23,45 @@ import java.util.List;
 public class MainActivity extends Activity
         implements View.OnClickListener, SurfaceHolder.Callback, Camera.PictureCallback {
 
+    public static final int LARGEST_WIDTH = 1080;
+    public static final int LARGEST_HEIGHT = 1920;
+    public static final String APPLOGTAG = "SNAPSHOT";
     private static final String LOGTAG = "MainActivity";
-
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
-
     private Button btnTakePic;
     private TextView txtTakeTime;
     private ImageButton btnTimeChk;
-
     private Handler timerUpdateHandler;
     private boolean timerRunning = false;
     private int currentTime = 0;
     private PopupMenu popupMenu = null;
-
     private ImageButton btnSwitchCamera;
     private int cameraPosition = 1;//0代表前置摄像头，1代表后置摄像头
-
     private ImageButton btnClkCameraView;
     private boolean isCanClkCameraView = false;
-
     private int timer = 0;
-
     private Camera camera;
+    private Runnable timerUpdateTask = new Runnable() {
+        @Override
+        public void run() {
+            if (currentTime > 1) {
+                timerUpdateHandler.postDelayed(timerUpdateTask, 1000);
+                currentTime--;
+            } else {
+                camera.takePicture(null, null, null, MainActivity.this);
+                timerRunning = false;
+                timer = 0;
+                currentTime = 0;
+            }
+            Log.v("TIME", currentTime + "s");
+            txtTakeTime.setVisibility(View.VISIBLE);
+            txtTakeTime.setText(currentTime + "s");
+            if (currentTime <= 0) {
+                txtTakeTime.setVisibility(View.INVISIBLE);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +91,10 @@ public class MainActivity extends Activity
 
         timerUpdateHandler = new Handler();
 
-        btnSwitchCamera = (ImageButton)findViewById(R.id.btn_switch_camera);
+        btnSwitchCamera = (ImageButton) findViewById(R.id.btn_switch_camera);
         btnSwitchCamera.setOnClickListener(this);
 
-        btnClkCameraView = (ImageButton)findViewById(R.id.btn_clkview_chk);
+        btnClkCameraView = (ImageButton) findViewById(R.id.btn_clkview_chk);
         btnClkCameraView.setOnClickListener(this);
     }
 
@@ -122,15 +138,15 @@ public class MainActivity extends Activity
      * 摄像头过度曝光 参数为EFFECT_SOLARIZE
      * EFFECT_NONE,EFFECT_MONO,EFFECT_NEGATIVE,EFFECT_SOLARIZE,EFFECT_SEPIA...
      * EFFECT_NONE 无效果
-     EFFECT_MONO 黑白效果
-     EFFECT_NEGATIVE 负面效果
-     EFFECT_SOLARIZE 曝光效果
-     EFFECT_SEPIA Sephia效果
-     EFFECT_POSTERIZE 多色调分色印效果
-
-     EFFECT_WHITEBOARD 白板效果
-     EFFECT_BLACKBOARD 黑板效果
-     EFFECT_AQUA 浅绿色效果
+     * EFFECT_MONO 黑白效果
+     * EFFECT_NEGATIVE 负面效果
+     * EFFECT_SOLARIZE 曝光效果
+     * EFFECT_SEPIA Sephia效果
+     * EFFECT_POSTERIZE 多色调分色印效果
+     * <p/>
+     * EFFECT_WHITEBOARD 白板效果
+     * EFFECT_BLACKBOARD 黑板效果
+     * EFFECT_AQUA 浅绿色效果
      *
      * @param parameters
      */
@@ -149,10 +165,6 @@ public class MainActivity extends Activity
         }
         Log.v(APPLOGTAG, "Using Effect:" + parameters.getColorEffect());
     }
-
-    public static final int LARGEST_WIDTH = 1080;
-    public static final int LARGEST_HEIGHT = 1920;
-    public static final String APPLOGTAG = "SNAPSHOT";
 
     public void setNewCameraSize(Camera.Parameters parameters) {
         int best_width = 0;
@@ -218,7 +230,7 @@ public class MainActivity extends Activity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.camara_view:
-                if(isCanClkCameraView) {
+                if (isCanClkCameraView) {
                     camera.takePicture(null, null, null, this);
                 }
                 break;
@@ -296,7 +308,7 @@ public class MainActivity extends Activity
                 }
                 break;
             case R.id.btn_clkview_chk:
-                if(!isCanClkCameraView) {
+                if (!isCanClkCameraView) {
                     btnClkCameraView.setBackgroundResource(R.drawable.icon_clkview_open);
                     isCanClkCameraView = true;
                 } else {
@@ -329,27 +341,6 @@ public class MainActivity extends Activity
 
         return cam;
     }
-
-    private Runnable timerUpdateTask = new Runnable() {
-        @Override
-        public void run() {
-            if (currentTime > 1) {
-                timerUpdateHandler.postDelayed(timerUpdateTask, 1000);
-                currentTime--;
-            } else {
-                camera.takePicture(null, null, null, MainActivity.this);
-                timerRunning = false;
-                timer = 0;
-                currentTime = 0;
-            }
-            Log.v("TIME", currentTime + "s");
-            txtTakeTime.setVisibility(View.VISIBLE);
-            txtTakeTime.setText(currentTime + "s");
-            if (currentTime <= 0) {
-                txtTakeTime.setVisibility(View.INVISIBLE);
-            }
-        }
-    };
 
     public void onPopupButtonClick(View view) {
         //创建PopupMenu对象
